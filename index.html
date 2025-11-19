@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Conjunto360 | Enterprise Final</title>
+    <title>Conjunto360 | Final Master</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- DESIGN SYSTEM --- */
+        /* --- ESTILOS PRO --- */
         :root { --primary: #4F46E5; --bg-surface: #F8FAFC; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-surface); color: #0f172a; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, h4, .font-heading { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-        /* UI Utils */
+        /* UI FX */
         .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -28,6 +28,10 @@
         .btn-primary { background: linear-gradient(135deg, #4F46E5 0%, #4338ca 100%); color: white; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); transition: all 0.2s; }
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4); }
         .btn-primary:active { transform: scale(0.97); }
+        
+        /* Botón PSE Específico */
+        .btn-pse { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; font-weight: 700; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: all 0.2s; }
+        .btn-pse:hover { box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4); transform: translateY(-1px); }
 
         .input-modern { width: 100%; padding: 0.875rem 1rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; background: #f8fafc; transition: all 0.2s; outline: none; font-weight: 500; }
         .input-modern:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
@@ -71,8 +75,7 @@
             users: [
                 { id: 1, name: 'Juan Pérez', apto: '101', status: 'Al día', debt: 0, avatar: 'JP', phone: '300-123-4567' },
                 { id: 2, name: 'Ana Gómez', apto: '205', status: 'Mora', debt: 450000, avatar: 'AG', phone: '310-987-6543' },
-                { id: 3, name: 'Carlos Ruiz', apto: '304', status: 'Al día', debt: 0, avatar: 'CR', phone: '315-111-2233' },
-                { id: 4, name: 'Luisa Fer', apto: '401', status: 'Mora', debt: 125000, avatar: 'LF', phone: '320-444-5566' }
+                { id: 3, name: 'Carlos Ruiz', apto: '304', status: 'Al día', debt: 0, avatar: 'CR', phone: '315-111-2233' }
             ],
             finances: {
                 balance: 48500000,
@@ -92,19 +95,24 @@
             ],
             news: [
                 { id: 1, title: 'Corte de Agua', body: 'Mantenimiento programado mañana 8am - 12pm.', tag: 'Alerta', date: 'Hace 1h' },
-                { id: 2, title: 'Decoración Navideña', body: 'Invitamos a decorar las fachadas.', tag: 'Evento', date: 'Ayer' },
-                { id: 3, title: 'Nuevo Guardia', body: 'Bienvenida al Sr. Roberto Gómez.', tag: 'Info', date: '15 Nov' }
+                { id: 2, title: 'Decoración Navideña', body: 'Invitamos a decorar las fachadas.', tag: 'Evento', date: 'Ayer' }
             ],
             parking: {
                 total: 20,
                 grid: Array.from({length: 20}, (_, i) => ({ id: i+1, status: Math.random()>0.7?'ocupado':'libre', plate: Math.random()>0.7?`ABC-${100+i}`:'' }))
             },
+            // Simulamos que Juan Pérez tiene una deuda activa para la demo
             payments: [
-                { id: 1, month: 'Noviembre', amount: 250000, status: 'Pendiente', dueDate: '30 Nov' },
-                { id: 2, month: 'Octubre', amount: 250000, status: 'Pagado', dueDate: '30 Oct' }
+                { id: 101, month: 'Noviembre', amount: 250000, status: 'Pendiente', dueDate: '30 Nov' },
+                { id: 100, month: 'Octubre', amount: 250000, status: 'Pagado', dueDate: '30 Oct' }
             ],
             pqrs: [
                 { id: 1, type: 'Seguridad', title: 'Portón abierto', desc: 'Quedó abierto toda la noche.', status: 'Abierto', user: '101', date: 'Hoy' }
+            ],
+            logs: [
+                { time: '10:42 AM', msg: 'Pago recibido Apto 101', type: 'money' },
+                { time: '09:15 AM', msg: 'Reserva creada BBQ', type: 'res' },
+                { time: 'Yesterday', msg: 'Alerta masiva enviada', type: 'alert' }
             ]
         };
 
@@ -118,13 +126,11 @@
             const icon = document.getElementById('toast-icon');
             const colors = type==='success'?['border-emerald-500','text-emerald-500']:type==='error'?['border-red-500','text-red-500']:['border-indigo-500','text-indigo-500'];
             const icons = type==='success'?'fa-check-circle':type==='error'?'fa-circle-exclamation':'fa-circle-info';
-            
             t.className = `flex items-center w-full max-w-sm p-4 bg-white rounded-2xl shadow-2xl border-l-4 gap-4 fixed top-6 right-6 z-[9999] transition-transform duration-300 translate-x-full ${colors[0]}`;
             icon.className = `text-2xl ${colors[1]}`;
             icon.innerHTML = `<i class="fa-solid ${icons}"></i>`;
             document.getElementById('toast-title').innerText = title;
             document.getElementById('toast-msg').innerText = msg;
-            
             void t.offsetWidth; t.classList.remove('translate-x-full');
             setTimeout(() => t.classList.add('translate-x-full'), 3000);
         }
@@ -135,6 +141,12 @@
             document.getElementById('modal-overlay').classList.remove('hidden');
         }
         function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+        function toggleSidebar() {
+            const sb = document.getElementById('admin-sidebar');
+            const ov = document.getElementById('sidebar-overlay');
+            if(sb.classList.contains('-translate-x-full')){ sb.classList.remove('-translate-x-full'); ov.classList.remove('hidden'); }
+            else { sb.classList.add('-translate-x-full'); ov.classList.add('hidden'); }
+        }
 
         // =================================================================
         // 3. LOGIN
@@ -162,11 +174,7 @@
                         </div>
                         <div class="hidden md:flex w-1/2 bg-gradient-to-br from-indigo-600 to-violet-800 p-12 text-white flex-col justify-end relative overflow-hidden">
                             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                            <div class="relative z-10">
-                                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-xs font-bold mb-4 backdrop-blur-md border border-white/10"><i class="fa-solid fa-star text-yellow-300"></i> Enterprise v5.0</div>
-                                <h2 class="text-4xl font-bold mb-4 leading-tight">Comunidad,<br>Seguridad y Control.</h2>
-                                <p class="text-indigo-100 text-lg opacity-90">Gestión financiera, reservas de zonas comunes y control de acceso en tiempo real.</p>
-                            </div>
+                            <div class="relative z-10"><div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-xs font-bold mb-4 backdrop-blur-md border border-white/10"><i class="fa-solid fa-star text-yellow-300"></i> Enterprise v5.0</div><h2 class="text-4xl font-bold mb-4 leading-tight">Comunidad,<br>Seguridad y Control.</h2></div>
                         </div>
                     </div>
                 </div>`;
@@ -179,108 +187,68 @@
         // =================================================================
         function renderAdminLayout() {
             document.getElementById('app').innerHTML = `
-                <div class="flex h-screen bg-slate-100 fade-in">
-                    <aside class="w-72 bg-slate-900 text-white flex flex-col hidden md:flex shadow-2xl z-30 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+                <div class="flex h-screen bg-slate-100 fade-in relative">
+                    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm fade-in"></div>
+                    <aside id="admin-sidebar" class="fixed inset-y-0 left-0 w-72 bg-slate-900 text-white flex flex-col shadow-2xl z-50 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out">
                         <div class="h-20 flex items-center px-8 border-b border-slate-800 font-heading font-bold text-xl"><i class="fa-solid fa-building-shield text-indigo-400 mr-3"></i> AdminPro</div>
                         <nav class="flex-1 overflow-y-auto py-8 px-4 space-y-2">
                             <div class="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Principal</div>
-                            ${navBtn('Dashboard', 'fa-chart-pie', 'renderAdminDashboard()', true)}
+                            ${navBtn('Dashboard', 'fa-chart-pie', 'renderAdminDashboard(); toggleSidebar()', true)}
                             <div class="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 mt-6">Gestión</div>
-                            ${navBtn('Finanzas', 'fa-sack-dollar', 'renderAdminFinances()')}
-                            ${navBtn('Residentes', 'fa-users', 'renderAdminResidents()')}
-                            ${navBtn('Reservas', 'fa-calendar-check', 'renderAdminReservations()')}
-                            ${navBtn('Parqueadero', 'fa-square-parking', 'renderAdminParking()')}
-                            ${navBtn('PQRS', 'fa-inbox', 'renderAdminPQRS()')}
+                            ${navBtn('Finanzas', 'fa-sack-dollar', 'renderAdminFinances(); toggleSidebar()')}
+                            ${navBtn('Residentes', 'fa-users', 'renderAdminResidents(); toggleSidebar()')}
+                            ${navBtn('Reservas', 'fa-calendar-check', 'renderAdminReservations(); toggleSidebar()')}
+                            ${navBtn('Parqueadero', 'fa-square-parking', 'renderAdminParking(); toggleSidebar()')}
+                            ${navBtn('PQRS', 'fa-inbox', 'renderAdminPQRS(); toggleSidebar()')}
                         </nav>
                         <div class="p-6 border-t border-slate-800"><button onclick="renderLogin()" class="w-full py-3 bg-slate-800 rounded-xl text-slate-400 hover:text-white font-bold text-sm hover:bg-slate-700 transition">Cerrar Sesión</button></div>
                     </aside>
                     <div class="flex-1 flex flex-col h-screen overflow-hidden">
                         <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-20">
-                            <div class="flex items-center gap-4"><button class="md:hidden text-slate-500"><i class="fa-solid fa-bars text-xl"></i></button><h2 class="font-heading font-bold text-slate-800 text-2xl" id="page-title">Dashboard</h2></div>
+                            <div class="flex items-center gap-4"><button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-indigo-600 transition p-2"><i class="fa-solid fa-bars text-2xl"></i></button><h2 class="font-heading font-bold text-slate-800 text-xl md:text-2xl" id="page-title">Dashboard</h2></div>
                             <div class="flex items-center gap-4"><button onclick="openAlertModal()" class="hidden md:flex bg-red-50 text-red-600 px-4 py-2 rounded-xl text-sm font-bold border border-red-100 hover:bg-red-100 transition items-center gap-2"><i class="fa-solid fa-bullhorn"></i> Alerta</button><div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-600 border border-slate-200 shadow-sm">AD</div></div>
                         </header>
-                        <main id="admin-view" class="flex-1 overflow-y-auto p-8 bg-slate-50/50"></main>
+                        <main id="admin-view" class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50"></main>
                     </div>
                 </div>`;
             renderAdminDashboard();
         }
-        function navBtn(l, i, fn, a=false) { return `<button onclick="${fn}; hl(this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${a?'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30':'text-slate-400 hover:bg-slate-800 hover:text-white'}"><i class="fa-solid ${i} w-5 text-center"></i> ${l}</button>`; }
+        function navBtn(l, i, fn, active=false) { return `<button onclick="${fn}; hl(this)" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${active?'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30':'text-slate-400 hover:bg-slate-800 hover:text-white'}"><i class="fa-solid ${i} w-5 text-center"></i> ${l}</button>`; }
         function hl(e) { document.querySelectorAll('aside nav button').forEach(b=>b.className=b.className.replace('bg-indigo-600 text-white shadow-lg shadow-indigo-500/30','text-slate-400 hover:bg-slate-800 hover:text-white')); e.className='w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'; }
 
-        /* --- VISTAS ADMIN --- */
         function renderAdminDashboard() {
             document.getElementById('page-title').innerText = 'Resumen Ejecutivo';
-            document.getElementById('admin-view').innerHTML = `<div class="max-w-7xl mx-auto fade-in space-y-8"><div class="grid grid-cols-1 md:grid-cols-4 gap-6">${kpiCard('Balance', formatMoney(db.finances.balance), 'fa-wallet', 'emerald')}${kpiCard('Residentes', db.users.length, 'fa-users', 'blue')}${kpiCard('PQRS', db.pqrs.filter(p=>p.status==='Abierto').length, 'fa-inbox', 'orange')}${kpiCard('Parking', '12/20', 'fa-car', 'slate')}</div><div class="card p-12 text-center border-2 border-dashed border-slate-200 bg-slate-50 rounded-2xl"><div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl text-slate-400"><i class="fa-solid fa-chart-simple"></i></div><h3 class="text-xl font-bold text-slate-600">Centro de Actividad</h3><p class="text-slate-400">Selecciona un módulo del menú para ver detalles.</p></div></div>`;
+            document.getElementById('admin-view').innerHTML = `
+                <div class="max-w-7xl mx-auto fade-in space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        ${kpiCard('Balance', formatMoney(db.finances.balance), 'fa-wallet', 'emerald')}
+                        ${kpiCard('Residentes', db.users.length, 'fa-users', 'blue')}
+                        ${kpiCard('PQRS', db.pqrs.filter(p=>p.status==='Abierto').length, 'fa-inbox', 'orange')}
+                        ${kpiCard('Parking', '12/20', 'fa-car', 'slate')}
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="card p-6"><h3 class="font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Actividad Reciente</h3><div class="space-y-4">${db.logs.map(l => `<div class="flex gap-3 items-start"><div class="flex flex-col items-center"><div class="w-2 h-2 rounded-full ${l.type==='money'?'bg-emerald-500':l.type==='alert'?'bg-red-500':'bg-indigo-500'}"></div><div class="w-0.5 h-full bg-slate-100 mt-1"></div></div><div class="pb-4"><p class="text-xs font-bold text-slate-400">${l.time}</p><p class="text-sm font-medium text-slate-700">${l.msg}</p></div></div>`).join('')}</div></div>
+                        <div class="card p-6 flex flex-col justify-between"><div><h3 class="font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Estado del Sistema</h3><div class="space-y-4"><div><div class="flex justify-between text-xs font-bold mb-1"><span class="text-slate-500">Seguridad</span><span class="text-emerald-600">98% Online</span></div><div class="w-full bg-slate-100 rounded-full h-2"><div class="bg-emerald-500 h-2 rounded-full" style="width: 98%"></div></div></div><div><div class="flex justify-between text-xs font-bold mb-1"><span class="text-slate-500">Mantenimiento</span><span class="text-indigo-600">3 Pendientes</span></div><div class="w-full bg-slate-100 rounded-full h-2"><div class="bg-indigo-500 h-2 rounded-full" style="width: 45%"></div></div></div></div></div><div class="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-3"><i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i><div><p class="text-sm font-bold text-slate-800">Todo Operativo</p><p class="text-xs text-slate-500">Sin incidencias críticas.</p></div></div></div>
+                    </div>
+                </div>`;
         }
         function kpiCard(l,v,i,c) { return `<div class="card p-6 flex items-center justify-between border-l-4 border-${c}-500"><div><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">${l}</p><h3 class="text-3xl font-black text-slate-800 mt-1">${v}</h3></div><div class="w-14 h-14 rounded-2xl bg-${c}-50 text-${c}-600 flex items-center justify-center text-2xl"><i class="fa-solid ${i}"></i></div></div>`; }
 
-        /* --- ADMIN FINANZAS CORREGIDO --- */
         function renderAdminFinances() {
             document.getElementById('page-title').innerText = 'Finanzas';
             document.getElementById('admin-view').innerHTML = `
                 <div class="max-w-7xl mx-auto fade-in space-y-8">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="card p-8 bg-slate-900 text-white relative overflow-hidden border-none">
-                            <div class="absolute top-0 right-0 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl -mt-10 -mr-10"></div>
-                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Balance Total</p>
-                            <h2 class="text-4xl font-black mb-6">${formatMoney(db.finances.balance)}</h2>
-                            <div class="flex gap-3">
-                                <button class="px-4 py-2 bg-indigo-500 rounded-lg text-xs font-bold hover:bg-indigo-400 transition">Ingreso</button>
-                                <button class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-slate-600 transition">Gasto</button>
-                            </div>
-                        </div>
+                        <div class="card p-8 bg-slate-900 text-white relative overflow-hidden border-none"><div class="absolute top-0 right-0 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl -mt-10 -mr-10"></div><p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Balance Total</p><h2 class="text-4xl font-black mb-6">${formatMoney(db.finances.balance)}</h2><div class="flex gap-3"><button class="px-4 py-2 bg-indigo-500 rounded-lg text-xs font-bold hover:bg-indigo-400 transition">Ingreso</button><button class="px-4 py-2 bg-slate-700 rounded-lg text-xs font-bold hover:bg-slate-600 transition">Gasto</button></div></div>
                         ${kpiCard('Ingresos Mes', formatMoney(db.finances.monthlyIncome), 'fa-arrow-trend-up', 'emerald')}
                         ${kpiCard('Gastos Mes', formatMoney(db.finances.monthlyExpense), 'fa-arrow-trend-down', 'red')}
                     </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 card p-6 flex flex-col">
-                            <h3 class="font-bold text-slate-800 mb-6">Flujo de Caja</h3>
-                            <div class="flex-1 flex items-end justify-between gap-4 h-64 px-2 pb-4">
-                                ${db.finances.chartIncome.map((inc, i) => `
-                                    <div class="flex-1 flex flex-col justify-end gap-1 h-full group">
-                                        <div class="w-full bg-emerald-500 rounded-t opacity-80 group-hover:opacity-100 bar-anim relative" style="height: ${inc}%"></div>
-                                        <div class="w-full bg-red-400 rounded-b opacity-60 group-hover:opacity-100 bar-anim" style="height: ${db.finances.chartExpense[i]}%"></div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="flex justify-between text-xs font-bold text-slate-400 uppercase pt-2 border-t border-slate-100">
-                                <span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span><span>Jul</span>
-                            </div>
-                        </div>
-
-                        <div class="card p-0 overflow-hidden flex flex-col">
-                            <div class="p-4 bg-slate-50 border-b border-slate-100 font-bold text-slate-700 text-sm">Cartera en Mora</div>
-                            <div class="flex-1 overflow-y-auto">
-                                ${db.users.filter(u => u.status === 'Mora').map(u => `
-                                    <div class="p-4 border-b border-slate-50 flex items-center justify-between hover:bg-slate-50 transition">
-                                        <div><p class="font-bold text-slate-800 text-sm">${u.name}</p><p class="text-xs text-slate-500">Apto ${u.apto}</p></div>
-                                        <div class="text-right"><p class="font-bold text-red-600 text-sm">${formatMoney(u.debt)}</p><button class="text-[10px] text-indigo-600 font-bold underline" onclick="showToast('Notificación', 'Recordatorio de cobro enviado')">Cobrar</button></div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
+                        <div class="lg:col-span-2 card p-6 flex flex-col"><h3 class="font-bold text-slate-800 mb-6">Flujo de Caja</h3><div class="flex-1 flex items-end justify-between gap-4 h-64 px-2 pb-4">${db.finances.chartIncome.map((inc, i) => `<div class="flex-1 flex flex-col justify-end gap-1 h-full group"><div class="w-full bg-emerald-500 rounded-t opacity-80 group-hover:opacity-100 bar-anim relative" style="height: ${inc}%"></div><div class="w-full bg-red-400 rounded-b opacity-60 group-hover:opacity-100 bar-anim" style="height: ${db.finances.chartExpense[i]}%"></div></div>`).join('')}</div><div class="flex justify-between text-xs font-bold text-slate-400 uppercase pt-2 border-t border-slate-100"><span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span><span>Jul</span></div></div>
+                        <div class="card p-0 overflow-hidden flex flex-col"><div class="p-4 bg-slate-50 border-b border-slate-100 font-bold text-slate-700 text-sm">Cartera en Mora</div><div class="flex-1 overflow-y-auto">${db.users.filter(u => u.status === 'Mora').map(u => `<div class="p-4 border-b border-slate-50 flex items-center justify-between hover:bg-slate-50 transition"><div><p class="font-bold text-slate-800 text-sm">${u.name}</p><p class="text-xs text-slate-500">Apto ${u.apto}</p></div><div class="text-right"><p class="font-bold text-red-600 text-sm">${formatMoney(u.debt)}</p><button class="text-[10px] text-indigo-600 font-bold underline" onclick="showToast('Notificación', 'Recordatorio enviado')">Cobrar</button></div></div>`).join('')}</div></div>
                     </div>
-
-                    <div class="card overflow-hidden">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-50 text-slate-500 font-bold uppercase text-xs"><tr><th class="p-4">Concepto</th><th class="p-4">Fecha</th><th class="p-4 text-right">Monto</th></tr></thead>
-                            <tbody class="divide-y divide-slate-100">
-                                ${db.finances.transactions.map(t => `
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="p-4 font-bold text-slate-700">${t.desc}</td>
-                                        <td class="p-4 text-slate-500">${t.date}</td>
-                                        <td class="p-4 text-right font-mono font-bold ${t.type==='in'?'text-emerald-600':'text-red-600'}">
-                                            ${t.type==='in'?'+':'-'} ${formatMoney(t.amount)}
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+                    <div class="card overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-50 text-slate-500 font-bold uppercase text-xs"><tr><th class="p-4">Concepto</th><th class="p-4">Fecha</th><th class="p-4 text-right">Monto</th></tr></thead><tbody class="divide-y divide-slate-100">${db.finances.transactions.map(t => `<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-700">${t.desc}</td><td class="p-4 text-slate-500">${t.date}</td><td class="p-4 text-right font-mono font-bold ${t.type==='in'?'text-emerald-600':'text-red-600'}">${t.type==='in'?'+':'-'} ${formatMoney(t.amount)}</td></tr>`).join('')}</tbody></table></div>
+                </div>`;
         }
 
         function renderAdminResidents() { document.getElementById('page-title').innerText = 'Residentes'; document.getElementById('admin-view').innerHTML = `<div class="max-w-7xl mx-auto fade-in card overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-50 text-slate-500 font-bold uppercase text-xs"><tr><th class="p-5">Residente</th><th class="p-5">Apto</th><th class="p-5">Estado</th><th class="p-5 text-right">Acción</th></tr></thead><tbody class="divide-y divide-slate-100">${db.users.map(u=>`<tr class="hover:bg-slate-50 transition"><td class="p-5 flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">${u.avatar}</div><div><p class="font-bold text-slate-800">${u.name}</p><p class="text-xs text-slate-500">${u.phone}</p></div></td><td class="p-5 font-mono font-medium text-slate-600">${u.apto}</td><td class="p-5"><span class="px-3 py-1 rounded-full text-xs font-bold ${u.status==='Al día'?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'}">${u.status}</span></td><td class="p-5 text-right"><button class="text-slate-400 hover:text-indigo-600"><i class="fa-solid fa-pen"></i></button></td></tr>`).join('')}</tbody></table></div>`; }
@@ -292,18 +260,16 @@
         function openAlertModal(){ openModal('Nueva Alerta', `<form onsubmit="sendAlert(event)" class="space-y-4"><div><label class="text-xs font-bold text-slate-500">Título</label><input id="a-title" class="input-modern" required></div><div><label class="text-xs font-bold text-slate-500">Mensaje</label><textarea id="a-body" class="input-modern" rows="3" required></textarea></div><button class="btn-primary w-full bg-red-600 hover:bg-red-700">Enviar</button></form>`); }
         function sendAlert(e){ e.preventDefault(); db.news.unshift({id:Date.now(), title:document.getElementById('a-title').value, body:document.getElementById('a-body').value, tag:'Alerta', date:'Ahora'}); closeModal(); showToast('Enviado','Notificación enviada a residentes'); }
 
+
         // =================================================================
-        // 5. RESIDENT LAYOUT (DESKTOP & MOBILE)
+        // 5. RESIDENT LAYOUT (CON TARJETA DE PAGO PROMINENTE)
         // =================================================================
         function renderResidentLayout() {
             document.getElementById('app').innerHTML = `
                 <div class="flex flex-col h-screen bg-slate-50 fade-in">
                     <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-30">
                         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-                            <div>
-                                <p class="text-indigo-200 text-xs font-bold uppercase tracking-wider">Portal Residente</p>
-                                <div class="font-heading font-bold text-xl flex items-center gap-2">Hola, ${currentUser.name.split(' ')[0]}</div>
-                            </div>
+                            <div><p class="text-indigo-200 text-xs font-bold uppercase tracking-wider">Portal Residente</p><div class="font-heading font-bold text-xl flex items-center gap-2">Hola, ${currentUser.name.split(' ')[0]}</div></div>
                             <div class="flex items-center gap-6">
                                 <nav class="hidden md:flex gap-4">
                                     <button onclick="renderResidentHome()" class="text-sm font-bold text-indigo-100 hover:text-white transition">Inicio</button>
@@ -330,19 +296,32 @@
         function resNavBtn(l, i, fn) { return `<button onclick="${fn}" class="flex flex-col items-center gap-1 p-3 text-slate-400 hover:text-indigo-600 w-full transition active:scale-95"><i class="fa-solid ${i} text-xl mb-0.5"></i><span class="text-[10px] font-bold">${l}</span></button>`; }
 
         function renderResidentHome() {
-            const debt = db.users.find(u=>u.apto===currentUser.apto).debt;
+            const debt = db.payments.find(p=>p.status==='Pendiente') ? db.payments.find(p=>p.status==='Pendiente').amount : 0;
+            const pendingBill = db.payments.find(p=>p.status==='Pendiente');
+
             document.getElementById('res-view').innerHTML = `
                 <div class="max-w-7xl mx-auto fade-in">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="space-y-6">
-                            <div class="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-3xl p-8 text-white shadow-xl shadow-indigo-500/30 relative overflow-hidden">
+                            <div class="bg-gradient-to-br ${debt > 0 ? 'from-indigo-600 to-purple-700' : 'from-emerald-500 to-teal-600'} rounded-3xl p-8 text-white shadow-xl shadow-indigo-500/30 relative overflow-hidden transition-all duration-500">
                                 <div class="absolute top-[-20%] right-[-10%] w-40 h-40 bg-white opacity-10 rounded-full blur-3xl"></div>
                                 <div class="relative z-10">
-                                    <p class="text-indigo-100 text-xs font-bold uppercase mb-2">Estado de Cuenta</p>
-                                    <h2 class="text-4xl font-black mb-2">${debt > 0 ? formatMoney(debt) : 'Al día'}</h2>
-                                    ${debt > 0 ? '<p class="text-xs font-bold bg-red-500/20 px-3 py-1 rounded-full inline-block border border-red-400/30"><i class="fa-solid fa-circle-exclamation mr-1"></i> Pago Pendiente</p>' : '<p class="text-xs font-bold bg-emerald-500/20 px-3 py-1 rounded-full inline-block border border-emerald-400/30"><i class="fa-solid fa-check-circle mr-1"></i> Paz y Salvo</p>'}
+                                    <p class="text-white/80 text-xs font-bold uppercase mb-2">Estado de Cuenta</p>
+                                    <h2 class="text-4xl font-black mb-4">${debt > 0 ? formatMoney(debt) : 'Al día'}</h2>
+                                    ${debt > 0 ? `
+                                        <div class="bg-white/20 backdrop-blur-md p-4 rounded-xl border border-white/10">
+                                            <div class="flex justify-between items-center mb-3">
+                                                <span class="text-xs font-bold text-white/90 uppercase">Factura ${pendingBill.month}</span>
+                                                <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">Vence: ${pendingBill.dueDate}</span>
+                                            </div>
+                                            <button onclick="payBill(${pendingBill.id})" class="w-full btn-pse py-3 text-sm shadow-lg flex items-center justify-center gap-2">
+                                                <i class="fa-regular fa-credit-card"></i> Pagar con PSE
+                                            </button>
+                                        </div>
+                                    ` : '<p class="text-xs font-bold bg-white/20 px-3 py-1 rounded-full inline-block border border-white/20"><i class="fa-solid fa-check-circle mr-1"></i> Paz y Salvo</p>'}
                                 </div>
                             </div>
+                            
                             <div class="grid grid-cols-2 gap-4">
                                 ${quickAction('Reservar', 'fa-calendar-days', 'bg-indigo-50 text-indigo-600', 'renderResidentReservations()')}
                                 ${quickAction('PQRS', 'fa-file-pen', 'bg-sky-50 text-sky-600', 'renderResidentPQRS()')}
@@ -350,6 +329,7 @@
                                 ${quickAction('Portería', 'fa-phone', 'bg-emerald-50 text-emerald-600', "showToast('Llamando...', 'Conectando con portería')")}
                             </div>
                         </div>
+
                         <div class="lg:col-span-2 space-y-6">
                             <div class="flex justify-between items-end">
                                 <h3 class="font-heading font-bold text-slate-700 text-xl">Novedades Recientes</h3>
@@ -375,12 +355,7 @@
 
         function renderResidentReservations() {
             const myRes = db.reservations.filter(r=>r.user===currentUser.apto);
-            document.getElementById('res-view').innerHTML = `
-                <div class="max-w-5xl mx-auto fade-in space-y-8">
-                    <div class="flex justify-between items-center"><h2 class="text-3xl font-heading font-bold text-slate-800">Mis Reservas</h2><button onclick="openResModal()" class="btn-primary shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
-                    <div class="grid gap-4">${myRes.map(r=>`<div class="card p-6 flex flex-col sm:flex-row justify-between items-center gap-4"><div class="flex items-center gap-5"><div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-2xl"><i class="fa-solid fa-calendar-check"></i></div><div><h4 class="font-bold text-slate-800 text-xl">${r.zone}</h4><p class="text-sm text-slate-500 font-medium mt-1"><i class="fa-regular fa-clock mr-2"></i> ${r.date} a las ${r.time}</p></div></div><span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide ${r.status==='Aprobada'?'bg-emerald-100 text-emerald-700':r.status==='Pendiente'?'bg-yellow-100 text-yellow-700':'bg-slate-100 text-slate-500'}">${r.status}</span></div>`).join('')}</div>
-                    <button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button>
-                </div>`;
+            document.getElementById('res-view').innerHTML = `<div class="max-w-5xl mx-auto fade-in space-y-8"><div class="flex justify-between items-center"><h2 class="text-3xl font-heading font-bold text-slate-800">Mis Reservas</h2><button onclick="openResModal()" class="btn-primary shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div><div class="grid gap-4">${myRes.map(r=>`<div class="card p-6 flex flex-col sm:flex-row justify-between items-center gap-4"><div class="flex items-center gap-5"><div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-2xl"><i class="fa-solid fa-calendar-check"></i></div><div><h4 class="font-bold text-slate-800 text-xl">${r.zone}</h4><p class="text-sm text-slate-500 font-medium mt-1"><i class="fa-regular fa-clock mr-2"></i> ${r.date} a las ${r.time}</p></div></div><span class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide ${r.status==='Aprobada'?'bg-emerald-100 text-emerald-700':r.status==='Pendiente'?'bg-yellow-100 text-yellow-700':'bg-slate-100 text-slate-500'}">${r.status}</span></div>`).join('')}</div><button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button></div>`;
         }
         function openResModal() { openModal('Nueva Reserva', `<form onsubmit="saveRes(event)" class="space-y-5"><div><label class="text-xs font-bold text-slate-500 uppercase ml-1">Zona Común</label><select id="r-zone" class="input-modern"><option>Salón Social</option><option>Zona BBQ</option><option>Gimnasio</option></select></div><div class="grid grid-cols-2 gap-4"><div><label class="text-xs font-bold text-slate-500 uppercase ml-1">Fecha</label><input type="date" id="r-date" class="input-modern" required></div><div><label class="text-xs font-bold text-slate-500 uppercase ml-1">Hora</label><input type="time" id="r-time" class="input-modern" required></div></div><button class="btn-primary w-full mt-2">Confirmar Solicitud</button></form>`); }
         function saveRes(e) { e.preventDefault(); db.reservations.push({id:Date.now(), zone:document.getElementById('r-zone').value, date:document.getElementById('r-date').value, time:document.getElementById('r-time').value, status:'Pendiente', user:currentUser.apto}); closeModal(); showToast('Solicitud Enviada','Pendiente de aprobación'); renderResidentReservations(); }
@@ -392,7 +367,7 @@
                 <div class="max-w-5xl mx-auto fade-in space-y-8">
                     <h2 class="text-3xl font-heading font-bold text-slate-800">Pagos y Facturas</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        ${pending ? `<div class="card p-8 text-center border-indigo-200 shadow-xl relative overflow-hidden group hover:border-indigo-300"><div class="absolute top-0 left-0 w-full h-2 bg-indigo-500"></div><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Total a Pagar</p><h1 class="text-5xl font-black text-slate-900 my-4">${formatMoney(pending.amount)}</h1><p class="text-sm text-slate-500 mb-8">Factura de <strong>${pending.month}</strong><br>Vence: ${pending.dueDate}</p><button onclick="payBill(${pending.id})" class="btn-primary w-full bg-emerald-500 hover:bg-emerald-600 shadow-emerald-200 text-lg py-4">Pagar con PSE <i class="fa-regular fa-credit-card ml-2"></i></button></div>` : `<div class="p-10 bg-emerald-50 rounded-2xl border border-emerald-100 text-center flex flex-col justify-center"><div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-4"><i class="fa-solid fa-check"></i></div><h3 class="font-bold text-emerald-800 text-2xl">¡Estás al día!</h3></div>`}
+                        ${pending ? `<div class="card p-8 text-center border-indigo-200 shadow-xl relative overflow-hidden group hover:border-indigo-300"><div class="absolute top-0 left-0 w-full h-2 bg-indigo-500"></div><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Total a Pagar</p><h1 class="text-5xl font-black text-slate-900 my-4">${formatMoney(pending.amount)}</h1><p class="text-sm text-slate-500 mb-8">Factura de <strong>${pending.month}</strong><br>Vence: ${pending.dueDate}</p><button onclick="payBill(${pending.id})" class="w-full btn-pse py-4 text-lg shadow-lg flex items-center justify-center gap-2"><i class="fa-regular fa-credit-card"></i> Pagar con PSE</button></div>` : `<div class="p-10 bg-emerald-50 rounded-2xl border border-emerald-100 text-center flex flex-col justify-center"><div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-4"><i class="fa-solid fa-check"></i></div><h3 class="font-bold text-emerald-800 text-2xl">¡Estás al día!</h3></div>`}
                         <div class="card p-8">
                             <h3 class="font-bold text-slate-600 text-sm uppercase tracking-wide mb-6">Historial de Pagos</h3>
                             <div class="space-y-0 divide-y divide-slate-100">${history.map(h => `<div class="py-4 flex justify-between items-center group hover:bg-slate-50 px-2 rounded transition"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center group-hover:bg-white group-hover:shadow-sm"><i class="fa-solid fa-receipt"></i></div><div><p class="font-bold text-slate-800 text-sm">${h.month}</p><p class="text-[10px] text-slate-400">Pagado el ${h.dueDate}</p></div></div><span class="font-mono font-bold text-slate-600 text-sm">${formatMoney(h.amount)}</span></div>`).join('')}</div>
@@ -401,28 +376,13 @@
                     <button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button>
                 </div>`;
         }
-        function payBill(id) { const p=db.payments.find(x=>x.id===id); if(p){ showToast('Procesando...','Conectando pasarela segura...'); setTimeout(()=>{p.status='Pagado'; renderResidentPayments(); showToast('¡Pago Exitoso!','Transacción aprobada #998877','success');}, 1500); } }
+        function payBill(id) { const p=db.payments.find(x=>x.id===id); if(p){ showToast('Procesando...','Conectando pasarela segura...'); setTimeout(()=>{p.status='Pagado'; renderResidentHome(); showToast('¡Pago Exitoso!','Transacción aprobada #998877','success');}, 1500); } }
 
-        function renderResidentParking() {
-            const free = db.parking.grid.filter(s=>s.status==='libre').length;
-            document.getElementById('res-view').innerHTML = `
-                <div class="max-w-5xl mx-auto fade-in space-y-6">
-                    <div class="flex justify-between items-center"><h2 class="text-3xl font-heading font-bold text-slate-800">Disponibilidad Parking</h2><span class="bg-emerald-100 text-emerald-700 px-5 py-2 rounded-full text-sm font-bold shadow-sm">${free} Cupos Libres</span></div>
-                    <div class="card p-8"><div class="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">${db.parking.grid.map(s=>`<div class="aspect-square rounded-xl border-2 border-dashed ${s.status==='libre'?'border-emerald-200 bg-emerald-50 text-emerald-600':'border-slate-200 bg-slate-50 text-slate-300'} flex flex-col items-center justify-center transition hover:scale-105"><i class="fa-solid fa-car text-2xl mb-2"></i><span class="text-xs font-bold">P-${s.id}</span></div>`).join('')}</div><div class="mt-6 flex gap-6 justify-center text-sm font-bold text-slate-500"><span class="flex items-center gap-2"><span class="w-4 h-4 bg-emerald-50 border border-emerald-200 rounded"></span> Libre</span><span class="flex items-center gap-2"><span class="w-4 h-4 bg-slate-50 border border-slate-200 rounded"></span> Ocupado</span></div></div>
-                    <button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button>
-                </div>`;
-        }
-
-        function renderResidentPQRS() {
-            const myP = db.pqrs.filter(p=>p.user===currentUser.apto);
-            document.getElementById('res-view').innerHTML = `<div class="max-w-5xl mx-auto fade-in space-y-6"><div class="flex justify-between items-center"><h2 class="text-3xl font-heading font-bold text-slate-800">Mis PQRS</h2><button onclick="openPQRSModal()" class="btn-primary shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Crear Reporte</button></div><div class="space-y-4">${myP.map(p=>`<div class="card p-6 border-l-4 ${p.status==='Abierto'?'border-orange-400':'border-slate-300'} hover:shadow-md transition"><div class="flex justify-between mb-2"><span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">${p.type}</span><span class="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">${p.status}</span></div><h4 class="font-bold text-slate-800 text-lg mb-1">${p.title}</h4><p class="text-slate-600 text-sm">${p.desc}</p></div>`).join('')}</div><button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button></div>`;
-        }
+        function renderResidentParking() { const free = db.parking.grid.filter(s=>s.status==='libre').length; document.getElementById('res-view').innerHTML = `<div class="max-w-5xl mx-auto fade-in space-y-6"><div class="flex justify-between items-center"><h2 class="text-3xl font-heading font-bold text-slate-800">Disponibilidad Parking</h2><span class="bg-emerald-100 text-emerald-700 px-5 py-2 rounded-full text-sm font-bold shadow-sm">${free} Cupos Libres</span></div><div class="card p-8"><div class="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">${db.parking.grid.map(s=>`<div class="aspect-square rounded-xl border-2 border-dashed ${s.status==='libre'?'border-emerald-200 bg-emerald-50 text-emerald-600':'border-slate-200 bg-slate-50 text-slate-300'} flex flex-col items-center justify-center transition hover:scale-105"><i class="fa-solid fa-car text-2xl mb-2"></i><span class="text-xs font-bold">P-${s.id}</span></div>`).join('')}</div><div class="mt-6 flex gap-6 justify-center text-sm font-bold text-slate-500"><span class="flex items-center gap-2"><span class="w-4 h-4 bg-emerald-50 border border-emerald-200 rounded"></span> Libre</span><span class="flex items-center gap-2"><span class="w-4 h-4 bg-slate-50 border border-slate-200 rounded"></span> Ocupado</span></div></div><button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button></div>`; }
+        function renderResidentPQRS() { const myP = db.pqrs.filter(p=>p.user===currentUser.apto); document.getElementById('res-view').innerHTML = `<div class="max-w-5xl mx-auto fade-in space-y-6"><div class="flex justify-between items-center"><h2 class="text-3xl font-heading font-bold text-slate-800">Mis PQRS</h2><button onclick="openPQRSModal()" class="btn-primary shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Crear Reporte</button></div><div class="space-y-4">${myP.map(p=>`<div class="card p-6 border-l-4 ${p.status==='Abierto'?'border-orange-400':'border-slate-300'} hover:shadow-md transition"><div class="flex justify-between mb-2"><span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">${p.type}</span><span class="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">${p.status}</span></div><h4 class="font-bold text-slate-800 text-lg mb-1">${p.title}</h4><p class="text-slate-600 text-sm">${p.desc}</p></div>`).join('')}</div><button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button></div>`; }
         function openPQRSModal() { openModal('Radicar PQRS', `<form onsubmit="savePQRS(event)" class="space-y-5"><div><label class="text-xs font-bold text-slate-500 uppercase ml-1">Tipo de Caso</label><select id="p-type" class="input-modern"><option>Mantenimiento</option><option>Convivencia</option><option>Seguridad</option></select></div><div><label class="text-xs font-bold text-slate-500 uppercase ml-1">Asunto</label><input id="p-sub" class="input-modern" required placeholder="Ej: Ruido excesivo"></div><div><label class="text-xs font-bold text-slate-500 uppercase ml-1">Descripción</label><textarea id="p-desc" class="input-modern" rows="3"></textarea></div><button class="btn-primary w-full mt-2">Enviar Reporte</button></form>`); }
         function savePQRS(e) { e.preventDefault(); db.pqrs.push({id:Date.now(), type:document.getElementById('p-type').value, title:document.getElementById('p-sub').value, desc:document.getElementById('p-desc').value, status:'Abierto', user:currentUser.apto}); closeModal(); showToast('Radicado','Tu caso ha sido enviado a administración'); renderResidentPQRS(); }
-
-        function renderResidentNews() {
-             document.getElementById('res-view').innerHTML = `<div class="max-w-5xl mx-auto fade-in space-y-6"><h2 class="text-3xl font-heading font-bold text-slate-800">Noticias y Comunicados</h2><div class="space-y-6">${db.news.map(n=>`<div class="card p-0 overflow-hidden hover:shadow-lg transition"><div class="h-2 ${n.tag==='Alerta'?'bg-red-500':'bg-indigo-500'}"></div><div class="p-8"><div class="flex justify-between items-center mb-4"><span class="text-[10px] font-bold uppercase px-3 py-1 rounded bg-slate-100 text-slate-500 tracking-wider">${n.tag}</span><span class="text-xs text-slate-400 font-bold">${n.date}</span></div><h3 class="font-bold text-slate-800 text-2xl mb-3">${n.title}</h3><p class="text-slate-600 leading-relaxed text-lg">${n.body}</p></div></div>`).join('')}</div><button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button></div>`;
-        }
+        function renderResidentNews() { document.getElementById('res-view').innerHTML = `<div class="max-w-5xl mx-auto fade-in space-y-6"><h2 class="text-3xl font-heading font-bold text-slate-800">Noticias y Comunicados</h2><div class="space-y-6">${db.news.map(n=>`<div class="card p-0 overflow-hidden hover:shadow-lg transition"><div class="h-2 ${n.tag==='Alerta'?'bg-red-500':'bg-indigo-500'}"></div><div class="p-8"><div class="flex justify-between items-center mb-4"><span class="text-[10px] font-bold uppercase px-3 py-1 rounded bg-slate-100 text-slate-500 tracking-wider">${n.tag}</span><span class="text-xs text-slate-400 font-bold">${n.date}</span></div><h3 class="font-bold text-slate-800 text-2xl mb-3">${n.title}</h3><p class="text-slate-600 leading-relaxed text-lg">${n.body}</p></div></div>`).join('')}</div><button onclick="renderResidentHome()" class="text-sm font-bold text-slate-400 hover:text-indigo-600 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Volver</button></div>`; }
 
         window.onload = renderLogin;
     </script>
